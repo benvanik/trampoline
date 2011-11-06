@@ -2,12 +2,15 @@ var airplay = require('airplay');
 var http = require('http');
 var util = require('util');
 
+var ContentCache = require('./contentcache').ContentCache;
 var DeviceHandler = require('./devicehandler').DeviceHandler;
 
 var API = function(port) {
   var self = this;
 
   this.port = port || 8090;
+
+  this.contentCache = new ContentCache();
 
   this.browser = airplay.createBrowser();
   this.browser.on('deviceOnline', function(device) {
@@ -65,7 +68,7 @@ API.prototype.dispatchDeviceListRequest = function(req, requestBody, res) {
 };
 
 API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
-  var requestObject = requestBody.length ? JSON.parse(requestBody) : {};
+  var request = requestBody.length ? JSON.parse(requestBody) : {};
 
   var deviceMatch = req.url.match(/\/device\/([a-z0-9]+)\/([a-z0-9]+)?/);
   if (deviceMatch) {
@@ -80,11 +83,11 @@ API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
       var actionName = deviceMatch[2] || 'default';
       var action = device.handler[actionName];
       if (action) {
-        action.call(device.handler, requestObject, function(responseObject) {
+        action.call(device.handler, request, function(response) {
           res.writeHead(200, {
             'Content-Type': 'text/plain'
           });
-          res.end(JSON.stringify(responseObject));
+          res.end(JSON.stringify(response));
         });
       } else {
         // Invalid action
@@ -102,8 +105,18 @@ API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
 };
 
 API.prototype.dispatchContentSetupRequest = function(req, requestBody, res) {
-  var requestObject = requestBody.length ? JSON.parse(requestBody) : {};
+  var request = requestBody.length ? JSON.parse(requestBody) : {};
 
+  var source = request.source;
+  var target = request.target;
+  var content = this.contentCache.findOrCreate(source, target);
+
+  res.writeHead(200, {
+    'Content-Type': 'text/plain'
+  });
+  res.end(JSON.stringify({
+    id: content.id
+  }));
 };
 
 API.prototype.dispatchContentRequest = function(req, requestBody, res) {

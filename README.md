@@ -54,7 +54,7 @@ Setup a new content serving request:
           target: {
             mimeType: string,     // 'video/mp4'
             resolution: number,   // 480, 720, 1080, undefined for original
-            quality: number       // [0-1]
+            quality: number       // [0-1], undefined for don't care
           }
         }
     --> {

@@ -90,7 +90,6 @@ API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
           res.end(JSON.stringify(response));
         });
       } else {
-        // Invalid action
         res.writeHead(404, 'Invalid action \'' + actionName + '\'');
         res.end();
       }
@@ -109,7 +108,7 @@ API.prototype.dispatchContentSetupRequest = function(req, requestBody, res) {
 
   var source = request.source;
   var target = request.target;
-  var content = this.contentCache.findOrCreate(source, target);
+  var content = this.contentCache.findOrCreate(source, target, request.id);
 
   res.writeHead(200, {
     'Content-Type': 'text/plain'
@@ -120,5 +119,51 @@ API.prototype.dispatchContentSetupRequest = function(req, requestBody, res) {
 };
 
 API.prototype.dispatchContentRequest = function(req, requestBody, res) {
-  // TODO: content requests
+  var request = requestBody.length ? JSON.parse(requestBody) : {};
+
+  var contentMatch = req.url.match(/\/content\/([a-z0-9-]+)\/?([a-z0-9]+)?/);
+  if (contentMatch) {
+    var contentId = contentMatch[1];
+    var content = this.contentCache.get(contentId);
+    if (content) {
+      var actionName = contentMatch[2] || 'default';
+      if (actionName == 'default') {
+        if (req.method == 'GET') {
+          content.get(req, res);
+        } else if (req.method == 'PUT') {
+          content.put(req, res);
+        } else if (req.method == 'DELETE') {
+          content.delete();
+          this.contentCache.remove(contentId);
+          res.writeHead(200, {
+            'Content-Type': 'text/plain'
+          });
+          res.end();
+        } else {
+          res.writeHead(405, 'Method Not Allowed');
+          res.end();
+        }
+      } else {
+        // Dispatch
+        var action = content[actionName];
+        if (action) {
+          action.call(content, request, function(response) {
+            res.writeHead(200, {
+              'Content-Type': 'text/plain'
+            });
+            res.end(JSON.stringify(response));
+          });
+        } else {
+          res.writeHead(404, 'Invalid action \'' + actionName + '\'');
+          res.end();
+        }
+      }
+    } else {
+      res.writeHead(404, 'Invalid content');
+      res.end();
+    }
+  } else {
+    res.writeHead(404, 'Invalid content');
+    res.end();
+  }
 };

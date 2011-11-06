@@ -10,6 +10,12 @@ var API = function(port) {
   this.port = port || 8090;
 
   this.browser = airplay.createBrowser();
+  this.browser.on('deviceOnline', function(device) {
+    util.puts('device online: ' + device.id + ' / ' + device.getName());
+  });
+  this.browser.on('deviceOffline', function(device) {
+    util.puts('device offline: ' + device.id + ' / ' + device.getName());
+  });
 
   this.server = http.createServer(function (req, res) {
     var requestBody = '';

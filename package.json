@@ -17,16 +17,24 @@
     "server"
   ],
   "directories": {
-    "lib": "./lib/trampoline"
   },
-  "main": "./lib/server",
+  "main": "./server",
+  "bin": {
+    "trampoline" : "./server.js"
+  },
   "dependencies": {
+    "tav": ">=0.1.0",
     "airplay": ">=0.0.1"
   },
   "scripts": {
+    "start": "node server.js"
   },
   "engines": {
     "node": ">= 0.5.x"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "config": {
+    "api_port": "8090",
+    "http_port": "8091"
+  }
 }

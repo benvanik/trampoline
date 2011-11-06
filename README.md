@@ -7,12 +7,36 @@ on the local network via
 by applications on the local machine or network to discover AirPlay devices and
 control the playback of those devices with one API.
 
-### Quickstart
+## Quickstart
+
+    npm install trampoline
+    npm start trampoline
+
+## Installation
+
+With [npm](http://npmjs.org):
 
     npm install trampoline
 
+From source:
 
-### Installation
+    cd ~
+    git clone https://benvanik@github.com/benvanik/trampoline.git
+    npm link trampoline/
+
+## Configuration
+
+When using `npm start`, use `npm config` to change the launch options:
+
+    npm config set trampoline:api_port 8090
+    npm config set trampoline:http_port 8091
+    npm start trampoline
+
+If launching directly via `trampoline`:
+
+    trampoline --api_port=8090 --http_port=8091
+
+## API
 
 ### Service REST API
 

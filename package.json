@@ -1,26 +1,27 @@
 {
-  "name": "airplay",
-  "description": "Apple AirPlay client library",
+  "name": "trampoline",
+  "description": "Apple AirPlay trampoline server",
   "version": "0.0.1",
   "author": "Ben Vanik <ben.vanik@gmail.com>",
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "git://github.com/benvanik/node-airplay.git"
+    "url": "git://github.com/benvanik/trampoline.git"
   },
   "keywords": [
     "apple",
     "mac",
     "media",
-    "airplay"
+    "airplay",
+    "video",
+    "server"
   ],
   "directories": {
-    "lib": "./lib/airplay"
+    "lib": "./lib/trampoline"
   },
-  "main": "./lib/airplay",
+  "main": "./lib/server",
   "dependencies": {
-    "plist": "https://github.com/benvanik/node-plist/tarball/master",
-    "mdns": "https://github.com/benvanik/node_mdns/tarball/master"
+    "airplay": ">=0.0.1"
   },
   "scripts": {
   },

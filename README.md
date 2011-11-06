@@ -7,6 +7,11 @@ on the local network via
 by applications on the local machine or network to discover AirPlay devices and
 control the playback of those devices with one API.
 
+Eventually, Trampoline will provide transparent video serving (exposing
+individual local files over HTTP to enable playback from AirPlay devices) and
+transcoding (sourcing from local or remote video files and transcoding into a
+format that Apple devices will accept).
+
 ## Quickstart
 
     npm install trampoline

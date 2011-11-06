@@ -23,13 +23,16 @@ var API = function(port) {
       requestBody += chunk;
     });
     req.on('end', function() {
-      // Expected URLs:
-      // /device/
+      // /device/list
+      if (req.url == '/device/list') {
+        self.dispatchDeviceListRequest(req, requestBody, res);
       // /device/[id]/[action]
-      if (req.url == '/device/') {
-        self.dispatchDeviceDefaultRequest(req, requestBody, res);
       } else if (req.url.indexOf('/device/') == 0) {
         self.dispatchDeviceRequest(req, requestBody, res);
+      // /content/setup
+      } else if (req.url == '/content/setup') {
+        self.dispatchContentSetupRequest(req, requestBody, res);
+      // /content/[id]
       } else if (req.url.indexOf('/content/') == 0) {
         self.dispatchContentRequest(req, requestBody, res);
       } else {
@@ -46,7 +49,7 @@ API.prototype.start = function() {
   this.server.listen(this.port);
 };
 
-API.prototype.dispatchDeviceDefaultRequest = function(req, requestBody, res) {
+API.prototype.dispatchDeviceListRequest = function(req, requestBody, res) {
   var response = {
     devices: []
   };
@@ -98,8 +101,11 @@ API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
   }
 };
 
-API.prototype.dispatchContentRequest = function(req, requestBody, res) {
+API.prototype.dispatchContentSetupRequest = function(req, requestBody, res) {
   var requestObject = requestBody.length ? JSON.parse(requestBody) : {};
 
+};
+
+API.prototype.dispatchContentRequest = function(req, requestBody, res) {
   // TODO: content requests
 };

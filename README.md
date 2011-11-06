@@ -42,11 +42,48 @@ If launching directly via `trampoline`:
 
 ## API
 
-### Service REST API
+### Content API
+
+Setup a new content serving request:
+
+    POST /content/setup
+        {
+          source: {
+            content: string
+          },
+          target: {
+            mimeType: string,     // 'video/mp4'
+            resolution: number,   // 480, 720, 1080, undefined for original
+            quality: number       // [0-1]
+          }
+        }
+    --> {
+          id: string
+        }
+
+    GET /content/[id]
+    --> [streaming content]
+
+    PUT /content/[id]
+
+    DELETE /content/[id]
+
+    GET /content/[id]/status
+    --> {
+          cached: boolean,
+          seekable: boolean,
+          readyToPlay: boolean
+        }
+
+    POST /content/[id]/cache
+        {}
+    --> {}
+
+### Device API
 
 List all devices on the network (query occasionally):
 
-    GET /device/
+    GET /device/list
     --> {
           devices: [
             {
@@ -99,12 +136,6 @@ Get the playback status of a device:
           ]
         }
 
-TODO: Authorize a device:
-
-    POST /device/id/authorize
-        {}
-    --> {}
-
 Begin playback of the given content:
 
     POST /device/id/play
@@ -126,12 +157,6 @@ Seek to the given position in the current content:
         {
           position: number
         }
-    --> {}
-
-Reverse playback of the current content:
-
-    POST /device/id/reverse
-        {}
     --> {}
 
 Change the playback rate of the current content (0 = pause, 1 = resume):

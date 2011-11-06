@@ -36,12 +36,6 @@ DeviceHandler.prototype.scrub = function(req, callback) {
   });
 };
 
-DeviceHandler.prototype.reverse = function(req, callback) {
-  this.device.reverse(function(res) {
-    callback(res);
-  });
-};
-
 DeviceHandler.prototype.rate = function(req, callback) {
   this.device.rate(req.value, function(res) {
     callback(res);
@@ -69,11 +63,4 @@ DeviceHandler.prototype.volume = function(req, callback) {
 DeviceHandler.prototype.photo = function(req, callback) {
   // TODO: implement photo
   callback(res);
-};
-
-DeviceHandler.prototype.test1 = function(req, callback) {
-  this.device.play(
-      'http://10.0.1.17:8199/65BEB3AE-ADF1-4FE7-9367-DB1672ED4727.m4v',
-      0,
-      callback);
 };

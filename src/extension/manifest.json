@@ -1,0 +1,16 @@
+{
+  "name": "Trampoline",
+  "version": "0.1",
+  "description": "Play web content on AirPlay devices",
+  "update_url" : "https://github.com/downloads/benvanik/Trampoline/chrome-update.xml",
+  "background_page": "background.html",
+  "page_action": {
+    "default_title": "Send the currently playing video to your AirPlay device"
+  },
+  "permissions": [
+    "tabs",
+    "experimental",
+    "http://*/",
+    "https://*/"
+  ]
+}

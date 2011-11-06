@@ -30,6 +30,8 @@ var API = function(port) {
         self.dispatchDeviceDefaultRequest(req, requestBody, res);
       } else if (req.url.indexOf('/device/') == 0) {
         self.dispatchDeviceRequest(req, requestBody, res);
+      } else if (req.url.indexOf('/content/') == 0) {
+        self.dispatchContentRequest(req, requestBody, res);
       } else {
         res.writeHead(404, 'Invalid URL format');
         res.end();
@@ -94,4 +96,10 @@ API.prototype.dispatchDeviceRequest = function(req, requestBody, res) {
     res.writeHead(404, 'Invalid device');
     res.end();
   }
+};
+
+API.prototype.dispatchContentRequest = function(req, requestBody, res) {
+  var requestObject = requestBody.length ? JSON.parse(requestBody) : {};
+
+  // TODO: content requests
 };

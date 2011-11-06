@@ -33,13 +33,12 @@ From source:
 
 When using `npm start`, use `npm config` to change the launch options:
 
-    npm config set trampoline:api_port 8090
-    npm config set trampoline:http_port 8091
+    npm config set trampoline:port 8090
     npm start trampoline
 
 If launching directly via `trampoline`:
 
-    trampoline --api_port=8090 --http_port=8091
+    trampoline --port=8090
 
 ## API
 

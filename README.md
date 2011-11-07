@@ -49,7 +49,8 @@ Setup a new content serving request:
     POST /content/setup
         {
           source: {
-            content: string
+            content: string,
+            mimeType: string      // 'video/webm'
           },
           target: {
             mimeType: string,     // 'video/mp4'

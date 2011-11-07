@@ -3,7 +3,6 @@ var transcoderTypes = require('./transcoder').transcoderTypes;
 var TranscoderList = function() {
   this.transcoderTypes_ = transcoderTypes.slice();
 };
-exports.TranscoderList = TranscoderList;
 
 TranscoderList.prototype.find_ = function(sourceMimeType, targetMimeType) {
   for (var n = 0; n < this.transcoderTypes_.length; n++) {
@@ -18,9 +17,11 @@ TranscoderList.prototype.find_ = function(sourceMimeType, targetMimeType) {
 TranscoderList.prototype.createTranscoder = function(source, target) {
   var transcoderType = this.find_(source.mimeType, target.mimeType);
   if (!transcoderType) {
-    return false;
+    return null;
   }
   var transcoder = new transcoderType(source, target);
   // TODO: verify?
   return transcoder;
 };
+
+exports.transcoderList = new TranscoderList();

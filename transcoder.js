@@ -22,6 +22,5 @@ NullTranscoder.canTranscode = function(sourceMimeType, targetMimeType) {
 
 // Order is highest to lowest priority
 exports.transcoderTypes = [
-  FfmpegTranscoder,
   NullTranscoder
 ];

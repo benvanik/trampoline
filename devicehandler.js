@@ -64,3 +64,7 @@ DeviceHandler.prototype.photo = function(req, callback) {
   // TODO: implement photo
   callback(res);
 };
+
+DeviceHandler.prototype.test1 = function(req, callback) {
+  this.device.play('http://10.0.1.3:8090/content/test', 0, callback);
+};

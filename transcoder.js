@@ -14,9 +14,9 @@ util.inherits(NullTranscoder, Transcoder);
 
 NullTranscoder.canTranscode = function(sourceMimeType, targetMimeType) {
   // Identity
-  if (sourceMimeType == targetMimeType) {
-    return true;
-  }
+  // if (sourceMimeType == targetMimeType) {
+  //   return true;
+  // }
   return false;
 };
 

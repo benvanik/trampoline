@@ -63,6 +63,9 @@ Content.prototype.get = function(req, res) {
 };
 
 Content.prototype.straightFileGet = function(req, res, sourceUrl) {
+  var source = this.source;
+  var target = this.target;
+
   var filename = decodeURI(sourceUrl.pathname);
   fs.stat(filename, function(err, stats) {
     if (err) {
@@ -71,9 +74,6 @@ Content.prototype.straightFileGet = function(req, res, sourceUrl) {
       return;
     }
 
-    // TODO: proper content type
-    var mimeType = 'application/octet-stream';
-
     var mtime = Date.parse(stats.mtime);
     var etag = JSON.stringify([stats.ino, stats.size, mtime].join('-'));
     var headers = {
@@ -81,17 +81,17 @@ Content.prototype.straightFileGet = function(req, res, sourceUrl) {
       'Date': new(Date)().toUTCString(),
       'Last-Modified': new(Date)(stats.mtime).toUTCString(),
       'Etag': etag,
-      'Content-Type': mimeType,
+      'Content-Type': target.mimeType,
       'Accept-Ranges': 'bytes'
     };
 
     if (req.headers['if-none-match'] == etag ||
         Date.parse(req.headers['if-modified-since']) >= mtime) {
-      headers['Content-Length'] = stats.size;
       res.writeHead(304, headers);
       res.end();
       return;
-    } else if (req.method == 'HEAD') {
+    }
+    if (req.method == 'HEAD') {
       headers['Content-Length'] = stats.size;
       res.writeHead(200, headers);
       res.end();
@@ -104,13 +104,13 @@ Content.prototype.straightFileGet = function(req, res, sourceUrl) {
       var range = req.headers['range'].match(/([0-9]+)-([0-9]+)/);
       start = parseInt(range[1]);
       end = parseInt(range[2]);
-      headers['Content-Length'] = end - start;
-      if (start != 0 && end != stats.size) {
+      headers['Content-Length'] = end - start + 1;
+      if (start == 0 && end == stats.size) {
+        res.writeHead(200, headers);
+      } else {
         headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' +
             stats.size;
         res.writeHead(206, headers);
-      } else {
-        res.writeHead(200, headers);
       }
     } else {
       headers['Content-Length'] = stats.size;
@@ -119,11 +119,12 @@ Content.prototype.straightFileGet = function(req, res, sourceUrl) {
     fs.createReadStream(filename, {
       flags: 'r',
       mode: 0666,
-      bufferSize: 64 * 1024
+      bufferSize: 64 * 1024,
+      start: start,
+      end: end
     }).pipe(res, {
       end: true
     });
-    return;
   });
 };
 

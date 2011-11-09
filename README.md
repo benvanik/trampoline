@@ -50,7 +50,10 @@ Setup a new content serving request:
         {
           source: {
             content: string,
-            mimeType: string      // 'video/webm'
+            mimeType: string,     // 'video/webm'
+            cookie: string,
+            referer: string,
+            auth: string          // user:password
           },
           target: {
             mimeType: string,     // 'video/mp4'

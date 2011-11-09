@@ -18,9 +18,9 @@
   ],
   "directories": {
   },
-  "main": "./server",
+  "main": "./lib/server",
   "bin": {
-    "trampoline" : "./server.js"
+    "trampoline" : "./lib/server.js"
   },
   "dependencies": {
     "tav": ">=0.1.0",

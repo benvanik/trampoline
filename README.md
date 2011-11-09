@@ -44,6 +44,8 @@ If launching directly via `trampoline`:
 
 ### Content API
 
+NOTE: content status readyToPlay must be true before attempting playback!
+
 Setup a new content serving request:
 
     POST /content/setup

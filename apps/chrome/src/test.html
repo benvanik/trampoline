@@ -99,6 +99,19 @@
         play(content);
       }
 
+      function waitUntilContentReady(contentId, callback) {
+        var checkReady = function() {
+          service.getContentStatus(contentId, function(status) {
+            if (status.readyToPlay) {
+              callback();
+            } else {
+              window.setTimeout(checkReady, 100);
+            }
+          });
+        };
+        checkReady();
+      }
+
       function testContent(url) {
         var source = {
           content: url
@@ -110,7 +123,9 @@
         };
         service.setupContent(source, target, function(response) {
           var contentId = response.id;
-          play(endpoint + '/content/' + contentId);
+          waitUntilContentReady(contentId, function() {
+            play(endpoint + '/content/' + contentId);
+          });
         });
       }
 

@@ -149,3 +149,25 @@ Service.prototype.photo = function(deviceId, content, transition, callback) {
     }
   });
 };
+
+Service.prototype.setupContent = function(source, target, callback) {
+  var request = {
+    source: source,
+    target: target
+  };
+  this.post_('/content/setup', request, function(response) {
+    window.console.log(response);
+    if (callback) {
+      callback(response);
+    }
+  });
+};
+
+Service.prototype.getContentStatus = function(contentId, callback) {
+  this.get_('/content/' + contentId + '/status', function(response) {
+    window.console.log(response);
+    if (callback) {
+      callback(response);
+    }
+  });
+};

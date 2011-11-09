@@ -37,29 +37,34 @@ Service.prototype.post_ = function(path, requestBody, callback) {
 
 Service.prototype.getDevices = function(callback) {
   this.get_('/device/list', function(response) {
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
 Service.prototype.getDeviceInfo = function(deviceId, callback) {
   this.get_('/device/' + deviceId + '/', function(response) {
-    window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
 Service.prototype.getDeviceStatus = function(deviceId, callback) {
   this.get_('/device/' + deviceId + '/status', function(response) {
-    window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
 Service.prototype.authorize = function(deviceId, callback) {
   var request = {};
   this.post_('/device/' + deviceId + '/authorize', request, function(response) {
-    window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -70,7 +75,9 @@ Service.prototype.play = function(deviceId, content, start, callback) {
   };
   this.post_('/device/' + deviceId + '/play', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+     callback(response);
+    }
   });
 };
 
@@ -78,7 +85,9 @@ Service.prototype.stop = function(deviceId, callback) {
   var request = {};
   this.post_('/device/' + deviceId + '/stop', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -88,7 +97,9 @@ Service.prototype.scrub = function(deviceId, position, callback) {
   };
   this.post_('/device/' + deviceId + '/scrub', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -96,7 +107,9 @@ Service.prototype.reverse = function(deviceId, callback) {
   var request = {};
   this.post_('/device/' + deviceId + '/reverse', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -106,7 +119,9 @@ Service.prototype.rate = function(deviceId, value, callback) {
   };
   this.post_('/device/' + deviceId + '/rate', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -116,7 +131,9 @@ Service.prototype.volume = function(deviceId, value, callback) {
   };
   this.post_('/device/' + deviceId + '/volume', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };
 
@@ -127,6 +144,8 @@ Service.prototype.photo = function(deviceId, content, transition, callback) {
   };
   this.post_('/device/' + deviceId + '/photo', request, function(response) {
     window.console.log(response);
-    callback(response);
+    if (callback) {
+      callback(response);
+    }
   });
 };

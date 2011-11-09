@@ -111,7 +111,9 @@ API.prototype.dispatchContentSetupRequest = function(req, requestBody, res) {
     request.id = 'test';
     request.source = {
       //content: 'http://wwwappskc.lonestar.edu/cgi/video/html5/test.m4v'
-      content: 'file:///Users/noxa/Downloads/test.m4v'
+      //content: 'file:///Users/noxa/Downloads/test.m4v',
+      content: 'file:///Users/noxa/Downloads/test1.webm',
+      mimeType: 'video/webm'
     };
     request.target = {
       mimeType: 'video/mp4'

@@ -23,8 +23,9 @@
     "trampoline" : "./lib/server.js"
   },
   "dependencies": {
-    "tav": ">=0.1.0",
-    "node-uuid": ">=1.2.0",
+    "tav": "0.1.0",
+    "node-uuid": "1.2.0",
+    "dom-js": "0.0.6",
     "airplay": ">=0.0.1"
   },
   "scripts": {

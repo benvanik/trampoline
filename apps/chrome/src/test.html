@@ -11,6 +11,8 @@
 
       var deviceList;
       var statusBox;
+      var infoBox;
+      var embeddedVideo;
       var seekBar;
       var isSeeking = false;
 
@@ -94,9 +96,9 @@
         targetDevice.stop();
       }
 
-      function testRemote() {
+      function testRemote(embed) {
         var content = 'http://wwwappskc.lonestar.edu/cgi/video/html5/test.m4v';
-        play(content);
+        play(content, embed);
       }
 
       function waitUntilContentReady(contentId, callback) {
@@ -114,7 +116,7 @@
         checkReady();
       }
 
-      function testContent(url) {
+      function testContent(url, embed) {
         var source = {
           content: url
         };
@@ -128,35 +130,42 @@
           waitUntilContentReady(contentId, function(info) {
             // TODO: better presentation
             infoBox.innerText = JSON.stringify(info);
-            play(endpoint + '/content/' + contentId);
+            play(endpoint + '/content/' + contentId, embed);
           });
         });
       }
 
-      function testContentLocal() {
-        testContent('file:///Users/noxa/test_videos/test.m4v');
+      function testContentLocal(embed) {
+        testContent('file:///Users/noxa/test_videos/test.m4v', embed);
       }
 
-      function testContentRemote() {
-        testContent('http://wwwappskc.lonestar.edu/cgi/video/html5/test.m4v');
+      function testContentRemote(embed) {
+        testContent('http://wwwappskc.lonestar.edu/cgi/video/html5/test.m4v',
+            embed);
       }
 
-      function testContentFlv() {
-        testContent('file:///Users/noxa/test_videos/test.flv');
+      function testContentFlv(embed) {
+        testContent('file:///Users/noxa/test_videos/test.flv', embed);
       }
 
-      function testContentWebM() {
-        testContent('file:///Users/noxa/test_videos/test1.webm');
+      function testContentWebM(embed) {
+        testContent('file:///Users/noxa/test_videos/test1.webm', embed);
       }
 
-      function play(content) {
-        targetDevice.play(content, 0);
+      function play(content, embed) {
+        if (embed) {
+          embeddedVideo.src = content;
+          embeddedVideo.play();
+        } else {
+          targetDevice.play(content, 0);
+        }
       }
 
       window.addEventListener('load', function() {
         deviceList = document.getElementById('deviceList');
         infoBox = document.getElementById('infoBox');
         statusBox = document.getElementById('statusBox');
+        embeddedVideo = document.getElementById('embeddedVideo');
         seekBar = document.getElementById('seekBar');
         seekBar.addEventListener('mousedown', function() {
           isSeeking = true;
@@ -201,6 +210,16 @@
     <br/>
     <div id="infoBox">
       [info]
+    </div>
+    <br/>
+    <br/>
+    <div>
+      <a href="javascript:testRemote(true);">test</a>&nbsp;
+      <a href="javascript:testContentLocal(true);">test/fs</a>&nbsp;
+      <a href="javascript:testContentRemote(true);">test/remote</a>&nbsp;
+      <a href="javascript:testContentFlv(true);">test/flv</a>&nbsp;
+      <a href="javascript:testContentWebM(true);">test/webm</a>&nbsp;
+      <video id="embeddedVideo"/>
     </div>
   </body>
 </html>

@@ -33,7 +33,7 @@
     "start": "node server.js"
   },
   "engines": {
-    "node": ">= 0.5.x"
+    "node": ">= 0.6.x"
   },
   "devDependencies": {},
   "config": {

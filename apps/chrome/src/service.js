@@ -171,3 +171,12 @@ Service.prototype.getContentStatus = function(contentId, callback) {
     }
   });
 };
+
+Service.prototype.getContentInfo = function(contentId, callback) {
+  this.get_('/content/' + contentId + '/info', function(response) {
+    window.console.log(response);
+    if (callback) {
+      callback(response);
+    }
+  });
+};

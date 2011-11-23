@@ -81,6 +81,11 @@ Setup a new content serving request:
           readyToPlay: boolean
         }
 
+    GET /content/[id]/info
+    --> {
+          ...tons of info...
+        }
+
     POST /content/[id]/cache
         {}
     --> {}

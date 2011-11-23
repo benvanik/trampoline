@@ -103,7 +103,9 @@
         var checkReady = function() {
           service.getContentStatus(contentId, function(status) {
             if (status.readyToPlay) {
-              callback();
+              service.getContentInfo(contentId, function(info) {
+                callback(info);
+              });
             } else {
               window.setTimeout(checkReady, 100);
             }
@@ -123,22 +125,28 @@
         };
         service.setupContent(source, target, function(response) {
           var contentId = response.id;
-          waitUntilContentReady(contentId, function() {
+          waitUntilContentReady(contentId, function(info) {
+            // TODO: better presentation
+            infoBox.innerText = JSON.stringify(info);
             play(endpoint + '/content/' + contentId);
           });
         });
       }
 
       function testContentLocal() {
-        testContent('file:///Users/noxa/Downloads/test.m4v');
+        testContent('file:///Users/noxa/test_videos/test.m4v');
       }
 
       function testContentRemote() {
         testContent('http://wwwappskc.lonestar.edu/cgi/video/html5/test.m4v');
       }
 
+      function testContentFlv() {
+        testContent('file:///Users/noxa/test_videos/test.flv');
+      }
+
       function testContentWebM() {
-        testContent('file:///Users/noxa/Downloads/test1.webm');
+        testContent('file:///Users/noxa/test_videos/test1.webm');
       }
 
       function play(content) {
@@ -147,6 +155,7 @@
 
       window.addEventListener('load', function() {
         deviceList = document.getElementById('deviceList');
+        infoBox = document.getElementById('infoBox');
         statusBox = document.getElementById('statusBox');
         seekBar = document.getElementById('seekBar');
         seekBar.addEventListener('mousedown', function() {
@@ -182,10 +191,16 @@
     <a href="javascript:testRemote();">test</a>&nbsp;
     <a href="javascript:testContentLocal();">test/fs</a>&nbsp;
     <a href="javascript:testContentRemote();">test/remote</a>&nbsp;
+    <a href="javascript:testContentFlv();">test/flv</a>&nbsp;
     <a href="javascript:testContentWebM();">test/webm</a>&nbsp;
     <br/>
     <input id="urlInput" type="text" size="150"></input>
     <a href="javascript:play(document.getElementById('urlInput').value);">
         play</a>
+    <br/>
+    <br/>
+    <div id="infoBox">
+      [info]
+    </div>
   </body>
 </html>

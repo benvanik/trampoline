@@ -104,8 +104,8 @@ function handleResponseStarted(tabId, details) {
     case 'video/quicktime':
     // Need transcoding:
     // case 'video/avi':
-    // case 'video/x-flv':
-    // case 'video/x-m4v':
+    case 'video/x-flv':
+    case 'video/x-m4v':
     // case 'video/x-msvideo':
     // case 'video/x-ms-asf':
     // case 'video/webm':

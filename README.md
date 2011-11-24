@@ -64,7 +64,8 @@ Setup a new content serving request:
           }
         }
     --> {
-          id: string
+          id: string,
+          url: string
         }
 
     GET /content/[id]
@@ -194,3 +195,10 @@ TODO: Post a photo for slideshow mode:
           transition: string
         }
     --> {}
+
+## TODO
+
+Providing a web sockets interface to status updates would prevent a lot of
+nasty polling behavior (for devices, content status, and playback status).
+There may be a way, via the /reverse command in AirPlay, to even get this
+plumbed up from the playback device itself.

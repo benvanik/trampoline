@@ -77,7 +77,7 @@ BrowserState.prototype.removeDevice_ = function(device) {
 BrowserState.prototype.getTabState = function(tabId) {
   var tabState = this.tabStates[tabId];
   if (!tabState) {
-    tabState = this.tabStates[tabId] = new TabState(tabId);
+    tabState = this.tabStates[tabId] = new TabState(this, tabId);
   }
   return tabState;
 };
@@ -87,12 +87,18 @@ BrowserState.prototype.getActiveTabState = function() {
 };
 
 BrowserState.prototype.beginPlayback = function(tabId, device, source) {
-  if (this.activeTabState) {
-    this.activeTabState.playbackContext.stop();
-    this.activeTabState = null;
-  }
+  this.endPlayback();
 
   this.activeTabState = this.getTabState(tabId);
   this.activeTabState.playbackContext =
       new PlaybackContext(this, this.activeTabState, device, source);
+
+  return this.activeTabState.playbackContext;
+};
+
+BrowserState.prototype.endPlayback = function() {
+  if (this.activeTabState) {
+    this.activeTabState.playbackContext.stop();
+    this.activeTabState = null;
+  }
 };

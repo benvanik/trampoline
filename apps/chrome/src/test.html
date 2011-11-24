@@ -130,7 +130,7 @@
           waitUntilContentReady(contentId, function(info) {
             // TODO: better presentation
             infoBox.innerText = JSON.stringify(info);
-            play(endpoint + '/content/' + contentId, embed);
+            play(embed ? response.url : response.id, embed);
           });
         });
       }

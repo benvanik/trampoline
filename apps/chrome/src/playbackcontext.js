@@ -1,4 +1,6 @@
-var PlaybackContext = function(browser, tab, device, source) {
+var PlaybackContext = function(browser, tab, device, details) {
+  EventEmitter.call(this);
+
   this.browser = browser;
   this.service = browser.service;
   this.tab = tab;
@@ -11,7 +13,9 @@ var PlaybackContext = function(browser, tab, device, source) {
   //   referer: string,
   //   auth: string          // user:password
   // }
-  this.source = source;
+  this.source = {
+    content: details.url
+  };
   // TODO: pull from options/etc
   this.target = {
     mimeType: 'video/mp4',
@@ -27,9 +31,10 @@ var PlaybackContext = function(browser, tab, device, source) {
 
   this.prepare_();
 };
+extend(PlaybackContext, EventEmitter);
 
 // Ready polling interval, in ms
-PlaybackContext.READY_POLL_INTERVAL_ = 100;
+PlaybackContext.READY_POLL_INTERVAL_ = 500;
 // Frequency of status updates, in ms
 PlaybackContext.UPDATE_INTERVAL_ = 1000;
 
@@ -41,7 +46,7 @@ PlaybackContext.prototype.prepare_ = function() {
       self.sourceInfo = info;
       self.startQueryingStatus_();
 
-      // TODO: event
+      self.emit('ready', info);
     });
   });
 };
@@ -49,9 +54,9 @@ PlaybackContext.prototype.prepare_ = function() {
 PlaybackContext.prototype.waitUntilReady_ = function(contentId, callback) {
   var self = this;
   var checkReady = function() {
-    self.getContentStatus(contentId, function(status) {
+    self.service.getContentStatus(contentId, function(status) {
       if (status.readyToPlay) {
-        service.getContentInfo(contentId, function(info) {
+        self.service.getContentInfo(contentId, function(info) {
           callback(info);
         });
       } else {
@@ -79,8 +84,13 @@ PlaybackContext.prototype.updateStatus_ = function() {
   var self = this;
   this.device.getStatus(function(status) {
     self.currentStatus = status;
-    // TODO: event
+    window.console.log('updating status: ' + status.position);
+    self.emit('status', status);
   });
+};
+
+PlaybackContext.prototype.play = function() {
+  this.device.play(this.service.endpoint + '/content/' + this.contentId, 0);
 };
 
 PlaybackContext.prototype.seek = function(percent) {

@@ -1,18 +1,209 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      var playButton;
+      var stopButton;
+      var rewindButton;
+
+      var seekBar;
+      var isSeeking = false;
+
+      var moreButton;
+      var moreBlock;
+      var showingMore = false;
+      var statusBox;
+      var infoBox;
+
+      var currentInfo = null;
+      var currentStatus = null;
+
+      var tabId = parseInt(window.location.search.substring(1));
+
+      var port = chrome.extension.connect({
+        name: 'popup:' + tabId
+      });
+      port.onMessage.addListener(function(msg) {
+        switch (msg.command) {
+          case 'idle':
+            playButton.innerText = '>';
+            break;
+          case 'ready':
+            if (msg.value) {
+              playButton.innerText = '||';
+              updateInfo(msg.value);
+              if (msg.status) {
+                updateStatus(msg.status);
+              }
+            } else {
+              playButton.innerText = 'X';
+              // Failed to play
+              // TODO: error display?
+            }
+            break;
+          case 'updateStatus':
+            updateStatus(msg.value);
+            break;
+        }
+      });
+
+      function formatTime(sec) {
+        var h = Math.floor(sec / 60 / 60) + ':';
+        var m = (Math.floor(sec / 60) % 60) + ':';
+        if (m.length < 3) {
+          m = '0' + m;
+        }
+        var s = (Math.floor(sec) % 60) + '';
+        if (s.length < 2) {
+          s = '0' + s;
+        }
+        var str = ((h != '0:') ? h : '') + m + s;
+        return str;
+      }
+
+      function updateInfo(info) {
+        currentInfo = info;
+
+        infoBox.innerText = JSON.stringify(info);
+      }
+
+      function updateStatus(status) {
+        currentStatus = status;
+
+        if (currentStatus) {
+          if (!isSeeking) {
+           seekBar.value = (status.position / status.duration) * 100;
+          }
+
+          if (status.rate) {
+            playButton.innerText = '||';
+          } else {
+            playButton.innerText = '>';
+          }
+
+          // TODO: better presentation
+          if (status.position !== undefined) {
+            statusBox.innerText =
+                formatTime(status.position) + '/' + formatTime(status.duration);
+          } else if (currentInfo.duration !== undefined) {
+            statusBox.innerText = formatTime(currentInfo.duration);
+          } else {
+            statusBox.innerText = '';
+          }
+        } else {
+          playButton.innerText = '>';
+
+          if (currentInfo.duration !== undefined) {
+            statusBox.innerText = formatTime(currentInfo.duration);
+          } else {
+            statusBox.innerText = '';
+          }
+        }
+      }
+
+      function play() {
+        if (playButton.innerText == '...') {
+          // Hold on...
+          return;
+        }
+
+        if (!currentStatus) {
+          port.postMessage({
+            command: 'play'
+          });
+          playButton.innerText = '...';
+        } else {
+          if (currentStatus.rate) {
+            port.postMessage({
+              command: 'pause'
+            });
+            playButton.innerText = '>';
+          } else {
+            if (currentStatus.position >= currentStatus.duration - 5) {
+              port.postMessage({
+                command: 'rewind'
+              });
+            }
+            port.postMessage({
+              command: 'resume'
+            });
+            playButton.innerText = '||';
+          }
+        }
+      }
+
+      function stop() {
+        port.postMessage({
+          command: 'stop'
+        });
+        updateStatus(null);
+      }
+
+      function rewind() {
+        port.postMessage({
+          command: 'rewind'
+        });
+        if (currentStatus && !currentStatus.rate) {
+          port.postMessage({
+            command: 'resume'
+          });
+        }
+      }
+
+      function seek(percent) {
+        port.postMessage({
+          command: 'seek',
+          value: percent
+        });
+      }
+
+      function showMore() {
+        if (showingMore) {
+          showingMore = false;
+          moreBlock.style.display = 'none';
+          moreButton.innerText = 'more';
+        } else {
+          showingMore = true;
+          moreBlock.style.display = '';
+          moreButton.innerText = 'less';
+        }
+      }
+
+      window.addEventListener('load', function() {
+        playButton = document.getElementById('playButton');
+        stopButton = document.getElementById('stopButton');
+        rewindButton = document.getElementById('rewindButton');
+
+        seekBar = document.getElementById('seekBar');
+        seekBar.addEventListener('mousedown', function() {
+          isSeeking = true;
+        });
+        seekBar.addEventListener('mouseup', function() {
+          seek(parseInt(seekBar.value));
+          isSeeking = false;
+        });
+
+        moreButton = document.getElementById('moreButton');
+        moreBlock = document.getElementById('moreBlock');
+
+        statusBox = document.getElementById('statusBox');
+        infoBox = document.getElementById('infoBox');
+      });
+    </script>
   </head>
   <body>
-    <a href="javascript:document.getElementById('more').style.display = '';">popup</a>
-    <a href="javascript:document.getElementById('more').style.display = 'none';">hide</a>
-    <div id="more" style="display: none">
-      content<br/>
-      content<br/>
-      content<br/>
-      content<br/>
-      content<br/>
-      content<br/>
-      content<br/>
+    <a id="playButton" href="javascript:play();">></a>&nbsp;
+    <a id="stopButton" href="javascript:stop();">x</a>&nbsp;
+    <a id="rewindButton" href="javascript:rewind();">|&lt;</a>&nbsp;
+    <span id="statusBox"></span>
+    <br/>
+    <input id="seekBar" type="range" min="0" max="100" value="0" step="1"/>
+    <br/>
+    <a id="moreButton" href="javascript:showMore();">more</a>
+    <div id="moreBlock" style="display: none">
+      <div id="infoBox">
+        [info]
+      </div>
     </div>
   </body>
 </html>

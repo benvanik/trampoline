@@ -1,5 +1,18 @@
-var serviceEndpoint = 'http://localhost:8090';
+var serviceEndpoint = 'http://10.0.1.3:8090';
 var browserState = new BrowserState(serviceEndpoint);
+
+// Route ports
+chrome.extension.onConnect.addListener(function(port) {
+  if (port.name.indexOf('popup:') == 0) {
+    // This should only ever come from the active tab - if there is no active
+    // tab then die
+    var tabId = parseInt(port.name.substr(port.name.indexOf(':') + 1));
+    var tabState = browserState.getTabState(tabId);
+    if (tabState) {
+      tabState.setPort(port);
+    }
+  }
+});
 
 function getWatchUrls() {
   var urls = [];
@@ -82,17 +95,17 @@ chrome.experimental.webRequest.onResponseStarted.addListener(function(details) {
   urls: getWatchUrls()
 }, ['responseHeaders']);
 
-chrome.pageAction.onClicked.addListener(function(tab) {
-  var device = browserState.targetDevice;
-  if (!device) {
-    alert('no device');
-  }
+// chrome.pageAction.onClicked.addListener(function(tab) {
+//   var device = browserState.targetDevice;
+//   if (!device) {
+//     alert('no device');
+//   }
 
-  var tabState = browserState.getTabState(tab.id);
-  var video = tabState.getLastVideo();
-  if (video) {
-    browserState.beginPlayback(tab.id, device, video);
-  } else {
-    alert('no video');
-  }
-});
+//   var tabState = browserState.getTabState(tab.id);
+//   var video = tabState.getLastVideo();
+//   if (video) {
+//     browserState.beginPlayback(tab.id, device, video);
+//   } else {
+//     alert('no video');
+//   }
+// });

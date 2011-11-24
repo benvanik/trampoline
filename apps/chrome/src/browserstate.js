@@ -37,7 +37,7 @@ BrowserState.prototype.queryDevices_ = function() {
     }
     for (var n = 0; n < response.devices.length; n++) {
       var deviceInfo = response.devices[n];
-      if (!this.devices[deviceInfo.id]) {
+      if (!self.devices[deviceInfo.id]) {
         var device = new Device(self.service, deviceInfo);
         self.addDevice_(device);
       }
